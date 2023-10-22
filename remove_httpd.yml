@@ -1,0 +1,18 @@
+---
+- name: removing httpd/apache2 services from target servers
+  hosts: all
+  become: true
+  gather_facts: yes
+
+  tasks:
+    - name: Delete httpd service from RedHat servers
+      yum:
+        name: httpd
+        state: absent
+      when: ansible_os_family == "RedHat"
+
+    - name: Delete apache2 service from Ubuntu servers
+      apt:
+        name: apache2
+        state: absent
+      when: ansible_os_family == "Debian"

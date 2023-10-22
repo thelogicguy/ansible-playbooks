@@ -1,0 +1,11 @@
+---
+- name: creating files
+  hosts: all
+  become: true
+  gather_facts: no
+
+  tasks:
+    - name: create a file and assign permisions
+      file:
+        path: /opt/dir1
+        state: absent
