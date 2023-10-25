@@ -1,0 +1,55 @@
+---
+- name: installing tomcat on web servers
+  hosts: RedHat-Servers
+  gather_facts: yes
+  become: true
+    # vars:
+    # tomcat_url: https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.95/bin/apache-tomcat-8.5.95.tar.gz
+    # tomcat_package: apache-tomcat-8.5.95
+  vars_files:
+     - tomcat_vars.yml
+
+  tasks:
+  - name: downloading java packages
+    yum:
+      name: java
+      state: installed
+
+  - name: installing tomcat packages
+    get_url:
+      url: "{{ tomcat_url }}"
+      dest: /opt
+      mode: 0755
+
+  - name: unarchiving tomcat packages
+    unarchive:
+       src: /opt/{{ tomcat_package }}.tar.gz
+       dest: /opt
+       remote_src: yes
+
+  - name: change permissions on apache-tomcat files
+    file:
+      path: /opt/{{ tomcat_package }}
+      mode: 0755
+      recurse: yes
+
+  - name: create link files for tomcat startup.sh
+    file:
+      src: /opt//bin/startup.sh
+      dest: /usr/local/bin/tomcatup
+      state: link
+      force: yes
+
+  - name: create link files for tomcat shutdown.sh
+    file:
+      src: /opt/{{ tomcat_package }}/bin/shutdown.sh
+      dest: /usr/local/bin/tomcatdown
+      state: link
+      force: yes
+
+  - name: start tomcat services
+    command: nohup ./startup.sh
+    args:
+      chdir: /opt/{{ tomcat_package }}/bin
+
+

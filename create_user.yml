@@ -3,7 +3,20 @@
   hosts: all
   gather_facts: no
   become: true
+ # vars:
+ #  user_name: kola
+  vars_files:
+    - /home/ansadmin/playbooks/users.yml
+
   tasks:
-    - name: creating user "thelogicguy2"
+    - name: creating user "{{ user_name }}"
       user:
-        name: thelogicguy2
+        name: "{{ user_name }}"
+
+    - name: Creating directory for the "{{ user_name }}"
+      file:
+        path: /opt/{{ user_name }}_temp_dir
+        state: directory
+        owner: "{{ user_name }}"
+        group: "{{ user_name }}"
+        mode: 0755
