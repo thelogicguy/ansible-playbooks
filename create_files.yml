@@ -1,11 +1,11 @@
 ---
-- name: creating files
+- name: deleting files
   hosts: all
   become: true
   gather_facts: no
 
   tasks:
-    - name: create a file and assign permisions
+    - name: delete dir1 directory
       file:
         path: /opt/dir1
         state: absent
