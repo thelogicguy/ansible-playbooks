@@ -35,17 +35,13 @@
 
   - name: create link files for tomcat startup.sh
     file:
-      src: /opt//bin/startup.sh
-      dest: /usr/local/bin/tomcatup
+      src: /opt{{ tomcat_package }}/bin/{{ item.tomcat_script }}
+      dest: /usr/local/bin/{{ item.tomcat_cmd }}
       state: link
       force: yes
-
-  - name: create link files for tomcat shutdown.sh
-    file:
-      src: /opt/{{ tomcat_package }}/bin/shutdown.sh
-      dest: /usr/local/bin/tomcatdown
-      state: link
-      force: yes
+    loop:
+      - {tomcat_script: '/opt/{{ tomcat_package }}/bin/startup.sh', tomcat_cmd: tomcatup}
+      - { tomcat_script: '/opt/{{ tomcat_package }}/bin/shutdown.sh', tomcat_cmd: tomcatdown}
 
   - name: start tomcat services
     command: nohup ./startup.sh
